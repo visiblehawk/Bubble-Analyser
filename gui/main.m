@@ -14,7 +14,7 @@
 % Example: 
 %    main('./Sample_photos/')
 %
-% Author: Reyes, Francisco; Quintanilla, Paulina; Mesa, Diego
+% Authors: Reyes, Francisco; Quintanilla, Paulina; Mesa, Diego
 % email: f.reyes@uq.edu.au,  
 % Website: https://gitlab.com/frreyes1/bubble-sizer
 % Oct-2020;
