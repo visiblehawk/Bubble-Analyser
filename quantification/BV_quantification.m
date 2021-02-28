@@ -1,40 +1,38 @@
-% function main(path_to_folder)
-%main.m - Bubble sizer image processing code, soon to be the GUI
-%This script calls all other functions/subrutines.
-%At some point we need to change this into a GUI asociated M-file
+%Default image processing algorithm coming with Bubble Analyser software
 %
-% Syntax:  main(path_to_folder)
+% Syntax: BV_quantification(I, params)
 %
 % Inputs:
-%    path_to_folder - path to the folder with the images to be analysed
+%    I: image, either rgb or grayscale
+%    params: parameters needed for certain operations, either set by the
+%    user or in the corresponding .config file
 %    
 % Outputs:
-%    none
+%    D_32: D_32 of each bubble detected and segmented
+%    L: labelled image resulting from the image processing algorithm
 %
-% Example: 
-%    main('./Sample_photos/')
 %
 % Author: Reyes, Francisco; Quintanilla, Paulina; Mesa, Diego
 % email: f.reyes@uq.edu.au,  
 % Website: https://gitlab.com/frreyes1/bubble-sizer
-% Copyright Oct-2020;
+% Copyright Feb-2021;
 %
-%This file is part of Foobar.
+%This file is part of Bubble Analyser.
 %
-%    Foobar is free software: you can redistribute it and/or modify
+%    Bubble Analyser is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
 %    the Free Software Foundation version 3 only of the License.
 %
-%    Foobar is distributed in the hope that it will be useful,
+%    Bubble Analyser is distributed in the hope that it will be useful,
 %    but WITHOUT ANY WARRANTY; without even the implied warranty of
 %    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %    GNU General Public License for more details.
 %
 %    You should have received a copy of the GNU General Public License
-%    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+%    along with Bubble Analyser.  If not, see <https://www.gnu.org/licenses/>.
 %
 %------------- BEGIN CODE --------------
-function [D_32, newLabeledImage, img] = BV_quantification(img, params)
+function [D_32, newLabeledImage] = BV_quantification(img, params)
 
 se = strel('disk', params.Morphological_element_size); %strel object to perform binary operations
 nb = params.Neighbourhood_size; %neighbourhood used
@@ -74,14 +72,10 @@ CH = bwconvhull(B,'objects');
 R3 = -bwdist(~CH);
 mask = imextendedmin(R3,nb);
 R4 = imimposemin(R3,mask);
-Ld3 = watershed(R4);
+Ld3 = watershed(R4,nb);
 CH(Ld3==0) = 0;
 
-if nb>4
-    nb = 4;
-end
-
-CC = bwconncomp(CH,nb);
+CC = bwconncomp(CH,4);
 S = regionprops(CC,'EquivDiameter','Area','Eccentricity','ConvexImage','Solidity'); %Eccentricity: 0 -> circle, 1 -> line
 
 %reject abnormal bubbles from quantification. check other "region props"
