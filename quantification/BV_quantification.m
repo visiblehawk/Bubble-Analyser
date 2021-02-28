@@ -36,20 +36,31 @@
 %------------- BEGIN CODE --------------
 function [D_32, newLabeledImage, img] = BV_quantification(img, params)
 
-se = params.se; %strel object to perform binary operations
-nb = params.nb; %neighbourhood used
+se = strel('disk', params.Morphological_element_size); %strel object to perform binary operations
+nb = params.Neighbourhood_size; %neighbourhood used
 px2mm = params.px2mm; %img resolution
 img_resample = params.resample;
 bknd_img = params.background_img;
+E_th = params.Eccentricity;
+S_th = params.Solidity;
 
 %use background correction as threshold
-T = adaptthresh(bknd_img, 0.4 , 'ForegroundPolarity', 'dark');
+if ~isempty(bknd_img)
+    if size(bknd_img,3)>1
+        bknd_img = rgb2gray(bknd_img);
+    end    
+    T = adaptthresh(bknd_img, 0.4 , 'ForegroundPolarity', 'dark');
+end
 
 if size(img,3)>1
     img = rgb2gray(img);
 end
 img = imresize(img, img_resample); %resample img to make process faster
-BW = imbinarize(img,imresize(T, img_resample));
+if ~isempty(bknd_img)
+    BW = imbinarize(img,imresize(T, img_resample));
+else
+    BW = imbinarize(img);
+end
 B = imclose(~BW,se);
 B = imfill(B,'holes');
 B = imclearborder(B); %remove bubbles touching the border
@@ -78,7 +89,7 @@ A = [S.Area]'; %column vector with areas
 E = [S.Eccentricity]'; %column vector with eccentricity
 D = [S.EquivDiameter]'; %column vector with diameters
 S = [S.Solidity]';
-idx = E>0.85| S<0.9; %abnormal bubbles: too stretch (E>0.85 , check this value!) 1 for water
+idx = E>E_th| S<S_th; %abnormal bubbles: too stretch (E>0.85 , check this value!) 1 for water
 allowableAreaIndexes = ~idx;
 D = D(~idx) * px2mm * 2; %WHY THE *2???
 keeperIndexes = find(allowableAreaIndexes);
