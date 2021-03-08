@@ -15,7 +15,7 @@
 %    main('./Sample_photos/')
 %
 % Author: Reyes, Francisco; Quintanilla, Paulina; Mesa, Diego
-% email: f.reyes@uq.edu.au,  
+% email: f.reyes@uq.edu.au,  p.quintanilla18@imperial.ac.uk
 % Website: https://gitlab.com/frreyes1/bubble-sizer
 % Copyright Oct-2020;
 %
