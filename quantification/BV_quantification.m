@@ -42,6 +42,7 @@ img_resample = params.resample;
 bknd_img = params.background_img;
 E_th = params.Eccentricity;
 S_th = params.Solidity;
+min_size = params.min_size; %minimum bubble size, in pixels!
 
 %Resize images for making processing faster
 img = imresize(img, img_resample); %resample img to make process faster
@@ -90,8 +91,9 @@ S = regionprops(CC,'EquivDiameter','Eccentricity','Solidity');
 %Reject abnormal objects, possibly unseparated bubbles
 E = [S.Eccentricity]'; %column vector with eccentricity
 D = [S.EquivDiameter]'; %column vector with diameters
-S = [S.Solidity]'; %
-idx = E>E_th | S<S_th; %abnormal bubbles: too stretched
+S = [S.Solidity]';
+Dmin = sqrt(4*min_size/pi); 
+idx = E>E_th | S<S_th | D<Dmin; %abnormal bubbles: too stretched
 
 %Update label image
 allowableAreaIndexes = ~idx;
