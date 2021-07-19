@@ -1,4 +1,4 @@
-%Default image processing algorithm coming with Bubble Analyser software
+%Default image processing algorithm coming with Burbuja software
 %
 % Syntax: BV_quantification(I, params)
 %
@@ -17,19 +17,19 @@
 % Website: https://gitlab.com/frreyes1/bubble-sizer
 % Copyright Feb-2021;
 %
-%This file is part of Bubble Analyser.
+%This file is part of Burbuja.
 %
-%    Bubble Analyser is free software: you can redistribute it and/or modify
+%    Burbuja is free software: you can redistribute it and/or modify
 %    it under the terms of the GNU General Public License as published by
 %    the Free Software Foundation version 3 only of the License.
 %
-%    Bubble Analyser is distributed in the hope that it will be useful,
+%    Burbuja is distributed in the hope that it will be useful,
 %    but WITHOUT ANY WARRANTY; without even the implied warranty of
 %    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %    GNU General Public License for more details.
 %
 %    You should have received a copy of the GNU General Public License
-%    along with Bubble Analyser.  If not, see <https://www.gnu.org/licenses/>.
+%    along with Burbuja.  If not, see <https://www.gnu.org/licenses/>.
 %
 %------------- BEGIN CODE --------------
 function [D, L_image] = BV_quantification(img, params)
