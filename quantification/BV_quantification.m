@@ -37,6 +37,7 @@ function [D, L_image] = BV_quantification(img, params)
 %Collect parameters from the structure
 se = strel('disk', params.Morphological_element_size); %strel object to perform binary operations
 nb = params.Neighbourhood_size; %neighbourhood used
+marker_size = params.Marker_size; %marker size of the Watershed segmentation
 px2mm = params.px2mm; %img resolution
 img_resample = params.resample;
 bknd_img = params.background_img;
@@ -72,8 +73,9 @@ B = imclearborder(B);
 
 %Now use watershed to separate bubbles that are overlapping
 R = -bwdist(~B);
-mask = imextendedmin(R,nb);
-R2 = imimposemin(R,mask);
+% mask = imextendedmin(R,nb);
+% R2 = imimposemin(R,mask);
+R2 = imhmin(R,marker_size,nb);
 Ld2 = watershed(R2);
 B(Ld2 == 0) = 0;
 CH = bwconvhull(B,'objects');
