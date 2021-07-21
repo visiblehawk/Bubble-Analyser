@@ -9,7 +9,7 @@ You can simply download a copy of the latest version from the GitLab repository 
 ## Usage
 
 If you have added the ‘Bubble Analyser’ folder to your Matlab path, you can run the APP by:
-```>> Bubble_Analyser```
+```>> BubbleAnalyserApp()```
 
 ## Contributing
 We researchers to join as developers to the repository so they can contribute making Bubble Analyser better. Please get in touch with the Administrator of the repository to be added as a member.

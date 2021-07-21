@@ -13,9 +13,9 @@
    viewBox="0 0 80.26606 80.26606"
    version="1.1"
    id="svg8"
-   inkscape:version="1.0.2 (e86c8708, 2021-01-15)"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
    sodipodi:docname="icon.svg"
-   inkscape:export-filename="/Users/pancho/GitLab/bubble-sizer/gui/icon.png"
+   inkscape:export-filename="C:\Users\uqfgerma\Docs\bubble-sizer\gui\icon.png"
    inkscape:export-xdpi="299.99228"
    inkscape:export-ydpi="299.99228">
   <defs
@@ -38,8 +38,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3742486"
-     inkscape:cx="117.33274"
-     inkscape:cy="145.22154"
+     inkscape:cx="142.51104"
+     inkscape:cy="138.38159"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -144,13 +144,13 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:9.28061px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.232016"
-       x="49.004204"
-       y="108.05219"
+       x="30.328846"
+       y="108.24472"
        id="text983"><tspan
          sodipodi:role="line"
          id="tspan981"
-         x="49.004204"
-         y="108.05219"
-         style="stroke-width:0.232016">Burbuja</tspan></text>
+         x="30.328846"
+         y="108.24472"
+         style="stroke-width:0.232016">Bubble Analyser</tspan></text>
   </g>
 </svg>
