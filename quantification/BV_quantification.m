@@ -95,7 +95,7 @@ E = [S.Eccentricity]'; %column vector with eccentricity
 D = [S.EquivDiameter]'; %column vector with diameters
 S = [S.Solidity]';
 Dmin = sqrt(4*min_size/pi); 
-idx = E>E_th | S<S_th | D<Dmin; %abnormal bubbles: too stretched
+idx = E>=E_th | S=<S_th | D<Dmin; %abnormal bubbles: too stretched
 
 %Update label image
 allowableAreaIndexes = ~idx;
