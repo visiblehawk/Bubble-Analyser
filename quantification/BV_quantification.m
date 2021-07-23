@@ -41,8 +41,8 @@ marker_size = params.Marker_size; %marker size of the Watershed segmentation
 px2mm = params.px2mm; %img resolution
 img_resample = params.resample;
 bknd_img = params.background_img;
-E_th = params.Eccentricity;
-S_th = params.Solidity;
+E_th = params.Min_eccentricity;
+S_th = params.Max_Solidity;
 min_size = params.min_size; %minimum bubble size, in pixels!
 
 %Resize images for making processing faster
@@ -95,7 +95,7 @@ E = [S.Eccentricity]'; %column vector with eccentricity
 D = [S.EquivDiameter]'; %column vector with diameters
 S = [S.Solidity]';
 Dmin = sqrt(4*min_size/pi); 
-idx = E>=E_th | S=<S_th | D<Dmin; %abnormal bubbles: too stretched
+idx = E>=E_th | S<=S_th | D<Dmin; %abnormal bubbles: too stretched
 
 %Update label image
 allowableAreaIndexes = ~idx;
