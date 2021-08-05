@@ -1,19 +1,19 @@
 %Default image processing algorithm coming with Bubble Analyser software
 %
-% Syntax: BV_quantification(I, params)
+% Syntax: Default(I, params)
 %
 % Inputs:
-%    I: image, either rgb or grayscale
-%    params: parameters needed for certain operations, either set by the
-%    user or in the corresponding .config file
-%    
+%    img: image, either rgb or grayscale
+%    params: parameters needed for certain operations, default values set by the
+%    corresponding .config file, but can be edited by the user
+%
 % Outputs:
 %    D: number array with the equivalent diameter, in mm, of each bubble detected and segmented
 %    L: labelled image resulting from the image processing algorithm
 %
 %
 % Author: Reyes, Francisco; Quintanilla, Paulina; Mesa, Diego
-% email: f.reyes@uq.edu.au,  
+% email: f.reyes@uq.edu.au,
 % Website: https://gitlab.com/frreyes1/bubble-sizer
 % Copyright Feb-2021;
 %
@@ -32,7 +32,7 @@
 %    along with Bubble Analyser. If not, see <https://www.gnu.org/licenses/>.
 %
 %------------- BEGIN CODE --------------
-function [D, L_image] = BV_quantification(img, params)
+function [D, L_image] = Default(img, params)
 
 %Collect parameters from the structure
 se = strel('disk', params.Morphological_element_size); %strel object to perform binary operations
@@ -55,7 +55,7 @@ end
 if ~isempty(bknd_img)
     if size(bknd_img,3)>1
         bknd_img = rgb2gray(bknd_img);
-    end    
+    end
     T = adaptthresh(bknd_img, 0.4 , 'ForegroundPolarity', 'dark');
 end
 if ~isempty(bknd_img)
@@ -85,7 +85,7 @@ R4 = imimposemin(R3,mask);
 Ld3 = watershed(R4,nb);
 CH(Ld3==0) = 0;
 
-%Now list the detected objects and calculate geometric properties 
+%Now list the detected objects and calculate geometric properties
 CC = bwconncomp(CH,4);
 %Eccentricity: 0 -> circle, 1 -> line; Solidity = Area/ConvexArea
 S = regionprops(CC,'EquivDiameter','Eccentricity','Solidity');
