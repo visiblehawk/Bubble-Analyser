@@ -36,8 +36,8 @@ function [D, L_image] = Default(img, params)
 
 %Collect parameters from the structure
 se = strel('disk', params.Morphological_element_size); %strel object to perform binary operations
-nb = params.Neighbourhood_size; %neighbourhood used
-marker_size = params.Marker_size; %marker size of the Watershed segmentation
+nb = params.Connectivity; %neighbourhood used (4 or 8)
+marker_size = params.Marker_size; %marker size of the Watershed segmentation, in px
 px2mm = params.px2mm; %img resolution
 img_resample = params.resample;
 bknd_img = params.background_img;
