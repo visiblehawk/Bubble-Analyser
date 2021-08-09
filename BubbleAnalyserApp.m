@@ -37,5 +37,8 @@ if current_ver < test_ver
                     'Matlab version mismatch','warn'));
     drawnow
 end
+p = fileparts(which(mfilename));
+addpath(p,'gui')
+addpath(p,'quantification')
 clearvars
 Interface
