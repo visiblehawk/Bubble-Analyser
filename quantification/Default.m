@@ -98,11 +98,38 @@ S = [S.Solidity]';
 D = D * px2mm * 1/img_resample; %now in mm
 idx = E>=E_max | S<=S_min | D<Dmin; %abnormal bubbles: too stretched
 
+
+outputImageStyle = 'mixed'; % 'default','mixed','outline'
 %Update label image
 allowableAreaIndexes = ~idx;
 keeperIndexes = find(allowableAreaIndexes);
 keeperBlobsImage = ismember(bwlabel(CH), keeperIndexes);
 L_image = label2rgb(bwlabel(keeperBlobsImage, nb));
+
+switch(outputImageStyle)
+    case 'default'
+    case 'mixed'
+        % Gordon - Showing original image with bubble labels
+        L_image=im2double(L_image);
+        bwImage = im2double(img);
+        L_image = L_image .* cat(3, bwImage, bwImage, bwImage);
+    case 'outline'
+         L_image=im2double(img);
+         B = bwboundaries( keeperBlobsImage,'noholes' );
+         
+         figure(1)
+         hold off
+         imshow(L_image)
+         hold on
+         for k = 1:length(B)
+             boundary = B{k};
+             plot(boundary(:,2), boundary(:,1), 'r', 'LineWidth', 2)
+         end
+         
+         % Not integrated with App currently so return 'default'
+         L_image = label2rgb(bwlabel(keeperBlobsImage, nb));
+end
+
 
 %Return D
 D = D(~idx); %remove abnormal bubbles
