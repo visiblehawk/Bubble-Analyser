@@ -5,12 +5,12 @@
 %
 % Inputs:
 %    none
-%    
+%
 % Outputs:
 %    none
 %
 % Author: Reyes, Francisco; Quintanilla, Paulina; Mesa, Diego
-% email: f.reyes@uq.edu.au,  
+% email: f.reyes@uq.edu.au,
 % Website: https://gitlab.com/frreyes1/bubble-sizer
 % Copyright Feb-2021;
 %
@@ -31,10 +31,10 @@
 %------------- BEGIN CODE --------------
 v = ver('matlab');
 current_ver = datetime(v.Date);
-test_ver = datetime(2018,01,01);
+test_ver = datetime(2020,01,01);
 if current_ver < test_ver
-    uiwait(msgbox({'This app has been tested on Matlab 2018 or newer'
-        'Continue at your own risk!'},'Matlab version mismatch','warn'));
+    uiwait(msgbox({'This app has been tested on Matlab 2020 or newer'},...
+                    'Matlab version mismatch','warn'));
     drawnow
 end
 clearvars
