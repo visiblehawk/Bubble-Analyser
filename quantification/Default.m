@@ -10,7 +10,8 @@
 % Outputs:
 %    D: number array with the equivalent diameter, in mm, of each bubble detected and segmented
 %    L: labelled image resulting from the image processing algorithm
-%
+%    extra_info: structure containing extra information about bubbles
+%    (eccentricity, solidity, etc)
 %
 % Author: Reyes, Francisco; Quintanilla, Paulina; Mesa, Diego
 % email: f.reyes@uq.edu.au,
@@ -32,7 +33,7 @@
 %    along with Bubble Analyser. If not, see <https://www.gnu.org/licenses/>.
 %
 %------------- BEGIN CODE --------------
-function [D, L_image] = Default(img, params)
+function [D, L_image, extra_info] = Default(img, params)
 
 %Collect parameters from the structure
 se = strel('disk', params.Morphological_element_size); %strel object to perform binary operations
@@ -100,6 +101,9 @@ D = D * px2mm * 1/img_resample; %now in mm
 idx = E>=E_max | S<=S_min | D<Dmin; %abnormal bubbles: too stretched
 %remove abnormal bubbles
 D = D(~idx);
+%collect extra bubble shape descriptors
+extra_info.Eccentricity = E(~idx);
+extra_info.Solidity = S(~idx);
 
 %Update label image if required. 
 if do_batch
