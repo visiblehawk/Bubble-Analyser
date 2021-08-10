@@ -44,6 +44,7 @@ bknd_img = params.background_img;
 E_max = params.Max_Eccentricity;
 S_min = params.Min_Solidity;
 Dmin = params.min_size; %minimum bubble size, in mm!
+do_batch = params.do_batch; %Check if we are doing batch processing or justone image
 
 %Resize images for making processing faster
 img = imresize(img, img_resample); %resample img to make process faster
@@ -97,12 +98,18 @@ S = [S.Solidity]';
 %!!Remember we scaled down the image by some factor!!
 D = D * px2mm * 1/img_resample; %now in mm
 idx = E>=E_max | S<=S_min | D<Dmin; %abnormal bubbles: too stretched
+%remove abnormal bubbles
+D = D(~idx);
 
-%Update label image
-allowableAreaIndexes = ~idx;
-keeperIndexes = find(allowableAreaIndexes);
-keeperBlobsImage = ismember(bwlabel(CH), keeperIndexes);
-L_image = label2rgb(bwlabel(keeperBlobsImage, nb));
-
-%Return D
-D = D(~idx); %remove abnormal bubbles
+%Update label image if required. 
+if do_batch
+    %when doing batch processing we don't need to create a fancy label image 
+    L_image = [];
+else
+    %when processing individual images we can create a nice label image to
+    %show the results to the user
+    allowableAreaIndexes = ~idx;
+    keeperIndexes = find(allowableAreaIndexes);
+    keeperBlobsImage = ismember(bwlabel(CH), keeperIndexes);
+    L_image = label2rgb(bwlabel(keeperBlobsImage, nb));
+end
