@@ -48,8 +48,9 @@ Dmin = params.min_size; %minimum bubble size, in mm!
 do_batch = params.do_batch; %Check if we are doing batch processing or justone image
 
 %Resize images for making processing faster
+[n, m, k] = size(img);
 img = imresize(img, img_resample); %resample img to make process faster
-if size(img,3)>1
+if k>1
     img = rgb2gray(img);
 end
 
@@ -115,5 +116,6 @@ else
     allowableAreaIndexes = ~idx;
     keeperIndexes = find(allowableAreaIndexes);
     keeperBlobsImage = ismember(bwlabel(CH), keeperIndexes);
-    L_image = label2rgb(bwlabel(keeperBlobsImage, nb));
+    keeperBlobsImage = imresize(keeperBlobsImage,[n m]); %put it back to original size
+    L_image = bwlabel(keeperBlobsImage, nb);
 end
