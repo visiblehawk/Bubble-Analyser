@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings name="slhistory" visible="true" xmlns="urn:mathworks.matlab.settings" xsi:schemaLocation="urn:mathworks.matlab.settings settings.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <key name="MostRecentlyUsed" visible="true">
+        <string minArraySize="0" maxArraySize="0">
+            <value><![CDATA[/Users/paulinaquintanillaperez/Google Drive/IMPERIAL COLLEGE/MATLAB/ctrllab3.0/simu_modlib.mdl]]></value>
+            <value><![CDATA[/Users/paulinaquintanillaperez/Google Drive/IMPERIAL COLLEGE/MATLAB/PID example/Tanque/tanque_PI_Can.slx]]></value>
+        </string>
+    </key>
+    <key name="MostRecentlyUsedCreation" visible="true">
+        <string minArraySize="0" maxArraySize="0">
+            <value><![CDATA[20191211154834926]]></value>
+            <value><![CDATA[20191104154312701]]></value>
+        </string>
+    </key>
+    <key name="MostRecentlyUsedPinnedItems" visible="true">
+        <string minArraySize="0" maxArraySize="0">
+        </string>
+    </key>
+    <key name="MostRecentlyUsedPinnedItemsCreation" visible="true">
+        <string minArraySize="0" maxArraySize="0">
+        </string>
+    </key>
+    <key name="MostRecentlyUsedSimulinkProjects" visible="true">
+        <string minArraySize="0" maxArraySize="0">
+        </string>
+    </key>
+    <key name="MostRecentlyUsedSimulinkProjectsCreation" visible="true">
+        <string minArraySize="0" maxArraySize="0">
+        </string>
+    </key>
+</settings>
