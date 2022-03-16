@@ -17,13 +17,29 @@ We researchers to join as developers to the repository so they can contribute ma
 Once joined, please open an issue first to discuss what you would like to change.
 
 ## Cite this work
-To reference this work please do as:
+To reference you can do it as:
+
++ Cite software/repository
+
 @misc{BubbleAnalyser2021,
   author = {Mesa, Diego and Quintanilla, Paulina and Reyes, Francisco},
   title = {{Bubble Analyser software}},
   year = {2021},
   publisher = {GitLab},
-	url = {https://gitlab.com/frreyes1/bubble-sizer}  
+	url = {https://gitlab.com/frreyes1/bubble-sizer}    
+}
+
++ Cite journal paper
+
+@article{Mesa2022,
+author = {Mesa, Diego and Quintanilla, Paulina and Reyes, Francisco},
+doi = {https://doi.org/10.1016/j.mineng.2022.107497},
+issn = {0892-6875},
+journal = {Minerals Engineering},
+pages = {107497},
+title = {{Bubble Analyser — An open-source software for bubble size measurement using image analysis}},
+volume = {180},
+year = {2022}
 }
 
 
