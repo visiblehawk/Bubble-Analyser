@@ -11,13 +11,15 @@ You can simply download a copy of the latest version from the GitLab repository 
 If you have added the ‘Bubble Analyser’ folder to your Matlab path, you can run the APP by:
 ```>> BubbleAnalyserApp()```
 
+Bubble Analyser was developed for Matlab 2020, or newer. However, it might run with older versions of Matlab. Bubble Analyser uses the following Toolboxes: Image Processing, Signal Processing and Financial.
+
 ## Contributing
-We researchers to join as developers to the repository so they can contribute making Bubble Analyser better. Please get in touch with the Administrator of the repository to be added as a member.
+We invite researchers to join as developers to the repository so they can contribute making Bubble Analyser better. Please get in touch with the Administrator of the repository to be added as a member.
 
 Once joined, please open an issue first to discuss what you would like to change.
 
 ## Cite this work
-To reference you can do it as:
+To reference the work please do it as:
 
 + Cite software/repository
 
@@ -41,7 +43,6 @@ title = {{Bubble Analyser — An open-source software for bubble size measuremen
 volume = {180},
 year = {2022}
 }
-
 
 ## License
 Bubble Analyser is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation version 3 only of the License.
