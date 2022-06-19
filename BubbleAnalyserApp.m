@@ -29,6 +29,8 @@
 %    along with Bubble Analyser. If not, see <https://www.gnu.org/licenses/>.
 %
 %------------- BEGIN CODE --------------
+
+%test Matlab version
 v = ver('matlab');
 current_ver = datetime(v.Date);
 test_ver = datetime(2020,01,01);
@@ -37,5 +39,16 @@ if current_ver < test_ver
                     'Matlab version mismatch','warn'));
     drawnow
 end
+
+%test if certain toolboxes are present
+pat = '(?<=^.+[\\/]toolbox[\\/])[^\\/]+';
+test_tlbx = regexp(which('impixel'), pat, 'match', 'once'); %test if impixel exist
+if isempty(test_tlbx) 
+    uiwait(msgbox({'Bubble Analyser needs Image Processing Toolbox to work. Please install using the Add-on Manager'},...
+                    'Toolbox missing','warn'));
+    drawnow
+end
+
+%run the app anyway, but the user has been warned
 clearvars
 Interface

@@ -11,7 +11,7 @@ You can simply download a copy of the latest version from the GitLab repository 
 If you have added the ‘Bubble Analyser’ folder to your Matlab path, you can run the APP by:
 ```>> BubbleAnalyserApp()```
 
-Bubble Analyser was developed for Matlab 2020, or newer. However, it might run with older versions of Matlab. Bubble Analyser uses the following Toolboxes: Image Processing, Signal Processing and Financial.
+Bubble Analyser was developed for Matlab 2020, or newer. However, it might run with older versions of Matlab. Bubble Analyser uses the following Toolboxes: Image Processing and Signal Processing.
 
 ## Contributing
 We invite researchers to join as developers to the repository so they can contribute making Bubble Analyser better. Please get in touch with the Administrator of the repository to be added as a member.
