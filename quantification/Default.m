@@ -115,7 +115,7 @@ else
     %show the results to the user
     allowableAreaIndexes = ~idx;
     keeperIndexes = find(allowableAreaIndexes);
-    keeperBlobsImage = ismember(bwlabel(CH), keeperIndexes);
+    keeperBlobsImage = ismember(bwlabel(CH,4), keeperIndexes);
     keeperBlobsImage = imresize(keeperBlobsImage,[n m]); %put it back to original size
     L_image = bwlabel(keeperBlobsImage, nb);
 end
