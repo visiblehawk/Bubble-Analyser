@@ -43,8 +43,6 @@ edgethreshold = params.edgethreshold;
 px2mm = params.px2mm; %img resolution
 img_resample = params.resample;
 bknd_img = params.background_img;
-%E_max = params.Max_Eccentricity;
-%S_min = params.Min_Solidity;
 Dmin = params.min_size; %minimum bubble size, in mm!
 do_batch = params.do_batch; %Check if we are doing batch processing or justone image
 
@@ -73,67 +71,57 @@ B = imclose(~BW,se);
 B = imfill(B,'holes');
 
 % Find circles and locate them by centers and radii.
-[centers_1, radii_1, metric_1] = imfindcircles(BW, ...
+[centers_1, radii_1, ~] = imfindcircles(B, ...
         [5,30], ...                                              % Radius range in pixels.
-        'ObjectPolarity', 'dark', ...                            % Find circular objects that are darker than the background, [brighter, darker].
+        'ObjectPolarity', 'bright', ...                            % Find circular objects that are darker than the background, [brighter, darker].
         'method', 'twostage', ...                                % Two methods for finding circles, [phase coding, twostage].
-        'sensitivity', sensitivity, ...                                  % 'Sensitivity', [0,1], is set to 0.85 by default.
-       'edgethreshold', edgethreshold)     																															 % A high value (closer to 1) will allow only the strong edges to be included, whereas a low value (closer to 0) includes even the weaker edges.
+        'sensitivity', sensitivity, ...                          % 'Sensitivity', [0,1], is set to 0.85 by default.
+       'edgethreshold', edgethreshold);     					 % A high value (closer to 1) will allow only the strong edges to be included, whereas a low value (closer to 0) includes even the weaker edges.
                                 
 
-[centers_2, radii_2, metric_2] = imfindcircles(BW, ...
-        [30,900], ...
-        'ObjectPolarity', 'dark', ...
+[centers_2, radii_2, ~] = imfindcircles(B, ...
+        [30,200], ...
+        'ObjectPolarity', 'bright', ...
         'Method','TwoStage',...
         'sensitivity', sensitivity, ...
-        'edgethreshold', edgethreshold)
+        'edgethreshold', edgethreshold);
         
 %Now list the detected objects and calculate geometric properties
-
-%Eccentricity: 0 -> circle, 1 -> line; Solidity = Area/ConvexArea
-S = regionprops(B,'Eccentricity','Solidity');
-
-E = [S.Eccentricity]'; %column vector with eccentricity
-S = [S.Solidity]';
-
 centers = [centers_1; centers_2];
-D = [radii_1, radii_2]; %column vector with diameters
+radii = [radii_1; radii_2];
+D = 2*[radii_1; radii_2]; %column vector with diameters
 D = D * px2mm * 1/img_resample; %now in mm
-idx =  D < Dmin;
 
 %remove abnormal bubbles
+idx =  D < Dmin;
 D = D(~idx);
-centers = centers(~idx);
+centers = centers(~idx,:);
+radii = radii(~idx);
 
-%collect extra bubble shape descriptors
-extra_info.Eccentricity = E(~idx);
-extra_info.Solidity = S(~idx);
-
-% Create the labeled circles
-Label = []
-for i = 1:length(D)
-    k = 1;
-    for theta = 0:1:360
-       Label(k,2) = centers(i,2) + D(i)*cosd(theta);
-       Label(k,1) = centers(i,1) + D(i)*sind(theta);
-       k = k+1;
-    end
-end
-
-% Save the label circles to L_image
-L_image = zeros(size(img));
-for i = 1:length(Label)
-    L_image(uint(Label(i,1)),uint(Label(i,2))) = 1;
-end
+extra_info = []; %nothing to include for now
 
 if do_batch
     % when doing batch processing we don't need to create a fancy label image
     L_image = [];
 else
-    %when processing individual images we can create a nice label image to
-    %show the results to the user
-    L_image = imresize(L_image, [n,m]);
-
+    %when processing individual images we can create a nice image showing
+    %the found circles
+    
+    % start with an empty label img
+    L_image = zeros(size(img));
+    
+    %for each circle, make pixels red
+    theta = 0:pi/50:2*pi;
+    for circ = 1:length(D)
+        xp = centers(circ,2) + radii(circ)*cos(theta);
+        yp = centers(circ,1) + radii(circ)*sin(theta);
+        idx = xp<1; xp(idx) = []; yp(idx) = [];
+        idx = xp>n; xp(idx) = []; yp(idx) = [];
+        idx = yp<1; xp(idx) = []; yp(idx) = [];
+        idx = yp>m; xp(idx) = []; yp(idx) = [];
+        L_image(round(xp), round(yp)) = circ; %idx of the circle
+    end   
+    L_image = imresize(uint16(L_image), [n,m]);    
 end
 
 
