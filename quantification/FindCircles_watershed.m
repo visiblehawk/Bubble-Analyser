@@ -1,4 +1,6 @@
-%Template image processing algorithm coming with Bubble Analyser software
+%Image analysis method based on 
+%	Wang, Junyu, Forbes, Gordon and Forbes, Elizaveta (2022). Frother characterization using a novel
+%	bubble size measurement technique. Applied Sciences, 12 (2) 750, 750. doi: 10.3390/app12020750
 %
 % Syntax: FindCircles(I, params)
 %
@@ -14,10 +16,10 @@
 %    (eccentricity, solidity, etc)
 %
 %
-% Author: Reyes, Francisco; Quintanilla, Paulina; Mesa, Diego
-% email: f.reyes@uq.edu.au,  
+% Author: Yunhao Guan 
+% email: yunhao.guan20@imperial.ac.uk,  
 % Website: https://gitlab.com/frreyes1/bubble-sizer
-% Copyright Feb-2021;
+% Copyright Aug-2022;
 %
 %This file is part of Bubble Analyser.
 %

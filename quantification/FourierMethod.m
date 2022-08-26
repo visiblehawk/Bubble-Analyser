@@ -1,4 +1,6 @@
-%Template image processing algorithm coming with Bubble Analyser software
+%Image analysis method based on 
+%	Vinnett et al. An image analysis approach to determine average bubble sizes using one-dimensional
+%	Fourier analysis. 2018. Minerals Engineering 126:160-166. 10.1016/j.mineng.2018.06.030
 %
 % Syntax: FourierMethod(I, params)
 %
@@ -14,10 +16,10 @@
 %    (eccentricity, solidity, etc)
 %
 %
-% Author: Reyes, Francisco; Quintanilla, Paulina; Mesa, Diego
-% email: f.reyes@uq.edu.au,  
+% Author: Yunhao Guan 
+% email: yunhao.guan20@imperial.ac.uk,  
 % Website: https://gitlab.com/frreyes1/bubble-sizer
-% Copyright Feb-2021;
+% Copyright Aug-2022;
 %
 %This file is part of Bubble Analyser.
 %
@@ -40,6 +42,7 @@ function [D, L_image, extra_info] = FourierMethod(img, params)
 se = strel('disk', params.Morphological_element_size); %strel object to perform binary operations;
 px2mm = params.px2mm; %img resolution
 img_resample = params.resample;
+min_size = params.min_size * img_resample;
 bknd_img = params.background_img;
 do_batch = params.do_batch; %Check if we are doing batch processing or justone image
 
@@ -67,7 +70,7 @@ end
 B = imclose(~BW,se);
 B = imfill(B,'holes');
 
-[M,N] = size(B);
+[M, N] = size(B);
 % Apply zero padding for unequal dimensions
 diff = abs(M-N);  % difference of rows and columns numbers
 
@@ -85,12 +88,12 @@ elseif M < N                       % More columns than rows
     end
 end
 
+% Remove small objects < min_size pixels
+im = bwareaopen(imgB, min_size);
 
-% Remove small objects < 100 pixels
-im = bwareaopen(imgB, 100);
 % Operate along the rows
 im( ~any(im,2), : ) = [];  % Remove empty lines
-[mx,nx] =size(im);
+[mx, nx] = size(im);
 fft_x = fft(hamming(mx).*(im-mean(im,2)),[],2);% FFT along the rows
 FourierMean_x = 20*log10(mean(abs(fft_x).^2, 1)); % Taking average along the y axis
 FourierMean_x = FourierMean_x - max(FourierMean_x);
@@ -98,29 +101,30 @@ FourierMean_x = FourierMean_x(:, 1:nx/2); % Half the dimension due to symmetry
 
 % Operate along the coloumns
 im = bwareaopen(imgB, 100);
-im( :, ~any(im,1) ) = [];  % Remove empty lines
-[my,~] = size(im);
+im(:, ~any(im,1)) = [];  % Remove empty lines
+[my, ~] = size(im);
 fft_y = fft(hamming(my).*(im-mean(im,1)),[],1);% FFT along the columns 
 FourierMean_y = 20*log10(mean(abs(fft_y).^2, 2)); % Taking average along the x axis
 FourierMean_y = FourierMean_y - max(FourierMean_y);
 FourierMean_y = FourierMean_y(1:my/2, :); % Half the dimension due to symmetry
 
-
+%get frequency scale
 Fs = px2mm/img_resample;% Because we scaled down the image by some factor
 freq = linspace(0, Fs/2, nx/2);
-
 
 % Compute the average of all lines
 FourierMean = [FourierMean_x', FourierMean_y];
 Normalised_PSD = mean(FourierMean,2);
 
 % Smooth the data
-xq=freq(1):0.001:freq(end);
+xq = freq(1):0.001:freq(end);
 Normalised_PSD = pchip(freq,Normalised_PSD,xq); 
+
+%transform into d32, according to the paper's findings
 D32 = 3.7./xq.^1.1;
 
 % Find the corresponding average D32 according to the bandwidth
-[~,idx]=min(abs(Normalised_PSD-(-20)));
+[~,idx] = min(abs(Normalised_PSD-(-20)));
 D = D32(idx);
 
 extra_info = []; %nothing to include for now
