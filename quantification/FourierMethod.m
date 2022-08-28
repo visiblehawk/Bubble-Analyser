@@ -100,7 +100,7 @@ FourierMean_x = FourierMean_x - max(FourierMean_x);
 FourierMean_x = FourierMean_x(:, 1:nx/2); % Half the dimension due to symmetry
 
 % Operate along the coloumns
-im = bwareaopen(imgB, 100);
+im = bwareaopen(imgB, min_size);
 im(:, ~any(im,1)) = [];  % Remove empty lines
 [my, ~] = size(im);
 fft_y = fft(hamming(my).*(im-mean(im,1)),[],1);% FFT along the columns 
