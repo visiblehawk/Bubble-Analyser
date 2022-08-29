@@ -101,7 +101,7 @@ imx = im;
 imx( ~any(imx,2), : ) = [];  % Remove empty lines
 fft_x = fft(H'.*(imx-mean(imx,2)),[],2); % FFT along the rows, removing the continious component
 avgPSD = mean(abs(fft_x).^2,1); % Taking average along the y axis
-FourierMean_x = 20*log10(avgPSD/max(avgPSD)); %Normalise agaisnt maximum value
+FourierMean_x = 10*log10(avgPSD/max(avgPSD)); %Normalise agaisnt maximum value
 FourierMean_x = FourierMean_x(:, 1:NPof2/2); % Half the dimension due to symmetry
 
 % Operate along the coloumns
@@ -109,7 +109,7 @@ imy = im;
 imy(:, ~any(imy,1)) = [];  % Remove empty lines
 fft_y = fft(H.*(imy-mean(imy,1)),[],1);% FFT along the columns
 avgPSD = mean(abs(fft_y).^2,2); % Taking average along the y axis
-FourierMean_y = 20*log10(avgPSD/max(avgPSD)); %Normalise agaisnt maximum value
+FourierMean_y = 10*log10(avgPSD/max(avgPSD)); %Normalise agaisnt maximum value
 FourierMean_y = FourierMean_y(1:NPof2/2, :); % Half the dimension due to symmetry
 
 %get frequency scale
