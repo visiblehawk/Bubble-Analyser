@@ -10,10 +10,9 @@
 %    user or in the corresponding .config file
 %    
 % Outputs:
-%    D: number array with the equivalent diameter, in mm, of each bubble detected and segmented
-%    L: labelled image resulting from the image processing algorithm
-%    extra_info: structure containing extra information about bubbles
-%    (eccentricity, solidity, etc)
+%    D: number array with the Sauter diameter, in mm, of the input image
+%    L: BW image showing the bubble segmentation
+%    extra_info: nothing for now
 %
 %
 % Author: Yunhao Guan 
@@ -44,7 +43,7 @@ px2mm = params.px2mm; %img resolution
 img_resample = params.resample;
 min_size = params.min_size * img_resample;
 bknd_img = params.background_img;
-do_batch = params.do_batch; %Check if we are doing batch processing or justone image
+do_batch = params.do_batch; %Check if we are doing batch processing or just one image
 
 %Resize images for making processing faster
 [n, m, k] = size(img);
@@ -70,55 +69,62 @@ end
 B = imclose(~BW,se);
 B = imfill(B,'holes');
 
-[M, N] = size(B);
-% Apply zero padding for unequal dimensions
-diff = abs(M-N);  % difference of rows and columns numbers
+%Fourier method now. The idea is to analyse each row and column of the
+%image and then average the Power Spectral Density.
 
-if M > N                           % More rows than columns
-    if (mod(diff,2) == 0)          % Even difference
-        imgB =  [zeros(M, diff/2) B zeros(M, diff/2)];       % Add columns to match dimensions
-    else                           % Odd difference
-        imgB = [zeros(M, floor(diff/2)) B zeros(M, floor(diff/2) + 1)];
-    end
-elseif M < N                       % More columns than rows
-    if (mod(diff,2) == 0)          % Even difference
-        imgB = [zeros(diff/2, N); B; zeros(diff/2, N)];         % Add rows to match dimensions
-    else
-        imgB = [zeros(floor(diff/2), N); B; zeros(floor(diff/2) + 1, N)];
-    end
+%The FFT likes the signal to have a power of 2 dimension, let's make sure
+%both columns and rows are equal to the nearest power of 2 number
+[M, N] = size(B);
+%nearest power of 2, greater than M and N
+NPof2 = 2^nextpow2(max([M N]));
+
+% Apply zero padding on both dimensions
+diff = abs(NPof2-N);  % Columns to add
+if (mod(diff,2) == 0)          % Even difference
+    imgB =  [zeros(M, diff/2) B zeros(M, diff/2)];       % Add columns to match dimensions
+else                           % Odd difference
+    imgB = [zeros(M, floor(diff/2)) B zeros(M, floor(diff/2) + 1)];
+end
+diff = abs(NPof2-M);  % Rows to add
+if (mod(diff,2) == 0)          % Even difference
+    imgB = [zeros(diff/2, NPof2); imgB; zeros(diff/2, NPof2)];         % Add rows to match dimensions
+else
+    imgB = [zeros(floor(diff/2), NPof2); imgB; zeros(floor(diff/2) + 1, NPof2)];
 end
 
 % Remove small objects < min_size pixels
 im = bwareaopen(imgB, min_size);
+H = hamming(NPof2); %Hamming filter to avoid freq. leakage
 
 % Operate along the rows
-im( ~any(im,2), : ) = [];  % Remove empty lines
-[mx, nx] = size(im);
-fft_x = fft(hamming(mx).*(im-mean(im,2)),[],2);% FFT along the rows
-FourierMean_x = 20*log10(mean(abs(fft_x).^2, 1)); % Taking average along the y axis
-FourierMean_x = FourierMean_x - max(FourierMean_x);
-FourierMean_x = FourierMean_x(:, 1:nx/2); % Half the dimension due to symmetry
+imx = im;
+imx( ~any(imx,2), : ) = [];  % Remove empty lines
+fft_x = fft(H'.*(imx-mean(imx,2)),[],2); % FFT along the rows, removing the continious component
+avgPSD = mean(abs(fft_x).^2,1); % Taking average along the y axis
+FourierMean_x = 20*log10(avgPSD/max(avgPSD)); %Normalise agaisnt maximum value
+FourierMean_x = FourierMean_x(:, 1:NPof2/2); % Half the dimension due to symmetry
 
 % Operate along the coloumns
-im = bwareaopen(imgB, min_size);
-im(:, ~any(im,1)) = [];  % Remove empty lines
-[my, ~] = size(im);
-fft_y = fft(hamming(my).*(im-mean(im,1)),[],1);% FFT along the columns 
-FourierMean_y = 20*log10(mean(abs(fft_y).^2, 2)); % Taking average along the x axis
-FourierMean_y = FourierMean_y - max(FourierMean_y);
-FourierMean_y = FourierMean_y(1:my/2, :); % Half the dimension due to symmetry
+imy = im;
+imy(:, ~any(imy,1)) = [];  % Remove empty lines
+fft_y = fft(H.*(imy-mean(imy,1)),[],1);% FFT along the columns
+avgPSD = mean(abs(fft_y).^2,2); % Taking average along the y axis
+FourierMean_y = 20*log10(avgPSD/max(avgPSD)); %Normalise agaisnt maximum value
+FourierMean_y = FourierMean_y(1:NPof2/2, :); % Half the dimension due to symmetry
 
 %get frequency scale
 Fs = px2mm/img_resample;% Because we scaled down the image by some factor
-freq = linspace(0, Fs/2, nx/2);
+%freq = linspace(0, Fs/2, NPof2/2);
+freq_ax = 1/Fs/NPof2 *(0:NPof2-1) - 1/Fs/2; %Frequency axis, in [pxl/mm]
+freq_ax = freq_ax(NPof2/2+1:end); % Half the dimension due to symmetry
 
 % Compute the average of all lines
 FourierMean = [FourierMean_x', FourierMean_y];
 Normalised_PSD = mean(FourierMean,2);
 
 % Smooth the data
-xq = freq(1):0.001:freq(end);
-Normalised_PSD = pchip(freq,Normalised_PSD,xq); 
+xq = freq_ax(1):0.001:freq_ax(end);
+Normalised_PSD = pchip(freq_ax,Normalised_PSD,xq); 
 
 %transform into d32, according to the paper's findings
 D32 = 3.7./xq.^1.1;
