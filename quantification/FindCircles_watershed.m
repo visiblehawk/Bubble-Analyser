@@ -1,14 +1,14 @@
-%Image analysis method based on 
+%Image analysis method based on
 %	Wang, Junyu, Forbes, Gordon and Forbes, Elizaveta (2022). Frother characterization using a novel
 %	bubble size measurement technique. Applied Sciences, 12 (2) 750, 750. doi: 10.3390/app12020750
 %
-% Syntax: FindCircles(I, params)
+% Syntax: FindCircles_watershed(I, params)
 %
 % Inputs:
 %    I: image, either rgb or grayscale
 %    params: parameters needed for certain operations, either set by the
 %    user or in the corresponding .config file
-%    
+%
 % Outputs:
 %    D: number array with the equivalent diameter, in mm, of each bubble detected and segmented
 %    L: labelled image resulting from the image processing algorithm
@@ -16,8 +16,8 @@
 %    (eccentricity, solidity, etc)
 %
 %
-% Author: Yunhao Guan 
-% email: yunhao.guan20@imperial.ac.uk,  
+% Author: Yunhao Guan
+% email: yunhao.guan20@imperial.ac.uk,
 % Website: https://gitlab.com/frreyes1/bubble-sizer
 % Copyright Aug-2022;
 %
@@ -36,7 +36,7 @@
 %    along with Bubble Analyser. If not, see <https://www.gnu.org/licenses/>.
 %
 %------------- BEGIN CODE --------------
-function [D, L_image, extra_info] = FindCircles(img, params)
+function [D, L_image, extra_info] = FindCircles_watershed(img, params)
 
 %Collect parameters from the structure
 se = strel('disk', params.Morphological_element_size); %strel object to perform binary operations;
@@ -85,8 +85,6 @@ B = imclearborder(B);
 
 %Now use watershed to separate bubbles that are overlapping
 R = -bwdist(~B);
-% mask = imextendedmin(R,nb);
-% R2 = imimposemin(R,mask);
 R2 = imhmin(R,marker_size,nb); %J = imhmin(I,H,conn) computes the H-minima transform, where conn specifies the connectivity.
 Ld2 = watershed(R2);
 B(Ld2 == 0) = 0;
@@ -105,7 +103,7 @@ img = CH;
         'method', 'twostage', ...                                % Two methods for finding circles, [phase coding, twostage].
         'sensitivity', smallSensitivity, ...                          % 'Sensitivity', [0,1], is set to 0.85 by default.
        'edgethreshold', smallEdgethreshold);     					 % A high value (closer to 1) will allow only the strong edges to be included, whereas a low value (closer to 0) includes even the weaker edges.
-                                
+
 
 [centers_2, radii_2, ~] = imfindcircles(img, ...
         [Bmin, Bmax], ...
@@ -139,7 +137,7 @@ else
 
     % start with an empty label img
     L_image = zeros(size(img));
-    
+
     %for each circle, make pixels red
     theta = 0:pi/50:2*pi;
     for circ = 1:length(D)
@@ -150,8 +148,6 @@ else
         idx = yp<1; xp(idx) = []; yp(idx) = [];
         idx = yp>m; xp(idx) = []; yp(idx) = [];
         L_image(round(xp), round(yp)) = circ; %idx of the circle
-    end   
+    end
     L_image = imresize(uint16(L_image), [n,m]);
 end
-
-

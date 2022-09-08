@@ -1,4 +1,4 @@
-%Image analysis method based on 
+%Image analysis method based on
 %	Vinnett et al. An image analysis approach to determine average bubble sizes using one-dimensional
 %	Fourier analysis. 2018. Minerals Engineering 126:160-166. 10.1016/j.mineng.2018.06.030
 %
@@ -8,15 +8,15 @@
 %    I: image, either rgb or grayscale
 %    params: parameters needed for certain operations, either set by the
 %    user or in the corresponding .config file
-%    
+%
 % Outputs:
 %    D: number array with the Sauter diameter, in mm, of the input image
 %    L: BW image showing the bubble segmentation
 %    extra_info: nothing for now
 %
 %
-% Author: Yunhao Guan 
-% email: yunhao.guan20@imperial.ac.uk,  
+% Author: Yunhao Guan
+% email: yunhao.guan20@imperial.ac.uk,
 % Website: https://gitlab.com/frreyes1/bubble-sizer
 % Copyright Aug-2022;
 %
@@ -114,7 +114,6 @@ FourierMean_y = FourierMean_y(1:NPof2/2, :); % Half the dimension due to symmetr
 
 %get frequency scale
 Fs = px2mm/img_resample;% Because we scaled down the image by some factor
-%freq = linspace(0, Fs/2, NPof2/2);
 freq_ax = 1/Fs/NPof2 *(0:NPof2-1) - 1/Fs/2; %Frequency axis, in [pxl/mm]
 freq_ax = freq_ax(NPof2/2+1:end); % Half the dimension due to symmetry
 
@@ -124,7 +123,7 @@ Normalised_PSD = mean(FourierMean,2);
 
 % Smooth the data
 xq = freq_ax(1):0.001:freq_ax(end);
-Normalised_PSD = pchip(freq_ax,Normalised_PSD,xq); 
+Normalised_PSD = pchip(freq_ax,Normalised_PSD,xq);
 
 %transform into d32, according to the paper's findings
 D32 = 3.7./xq.^1.1;
@@ -138,7 +137,6 @@ extra_info = []; %nothing to include for now
 if do_batch
     L_image = [];
 else
-  
+
      L_image = imresize(B, [n,m]);
 end
-
