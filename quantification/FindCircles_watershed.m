@@ -137,17 +137,14 @@ else
 
     % start with an empty label img
     L_image = zeros(size(img));
-
+    [N, M] = size(L_image);
     %for each circle, make pixels red
     theta = 0:pi/50:2*pi;
     for circ = 1:length(D)
-        xp = centers(circ,2) + radii(circ)*cos(theta);
-        yp = centers(circ,1) + radii(circ)*sin(theta);
-        idx = xp<1; xp(idx) = []; yp(idx) = [];
-        idx = xp>n; xp(idx) = []; yp(idx) = [];
-        idx = yp<1; xp(idx) = []; yp(idx) = [];
-        idx = yp>m; xp(idx) = []; yp(idx) = [];
-        L_image(round(xp), round(yp)) = circ; %idx of the circle
+        yp = round(centers(circ,2) + radii(circ)*cos(theta));
+        xp = round(centers(circ,1) + radii(circ)*sin(theta));
+        BW = poly2mask(xp,yp,N,M);
+        L_image(BW) = circ; %idx of the circle        
     end
     L_image = imresize(uint16(L_image), [n,m]);
 end
